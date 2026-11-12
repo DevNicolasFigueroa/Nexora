@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Tokens Nexora ─────────────────────────────────────────────── */
+:root {
+  --void: #0a1120;      /* fondo, azul profundo */
+  --hull: #101b31;      /* superficie exterior */
+  --panel: #14213a;     /* superficie interior */
+  --edge: #233550;      /* líneas y bordes */
+  --ice: #e9effa;       /* texto principal */
+  --mist: #93a5c4;      /* texto secundario */
+  --faro: #ffb844;      /* acento de acción y marca */
+  --faro-deep: #e09720; /* hover del acento */
+  --flujo: #5b8cff;     /* acento de datos/producto */
+  --ok: #3fd68f;        /* estado exitoso */
+  --on-amber: #201604;  /* texto sobre ámbar */
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--void);
+    color: var(--ice);
+  }
+
+  ::selection {
+    background-color: var(--faro);
+    color: var(--on-amber);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--faro);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* Ancho expandido de Archivo para display (requiere eje wdth) */
+  .font-wide {
+    font-stretch: 118%;
+  }
+}
+
+/* ── Momento orquestado: la oportunidad recorre el pipeline ────── */
+.travel {
+  animation: 9s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.travel-1 {
+  animation-name: deal-stage-1;
+}
+
+.travel-2 {
+  animation-name: deal-stage-2;
+}
+
+.travel-3 {
+  animation-name: deal-stage-3;
+}
+
+@keyframes deal-stage-1 {
+  0%, 26% { opacity: 1; transform: none; }
+  34%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+
+@keyframes deal-stage-2 {
+  0%, 26% { opacity: 0; transform: translateY(-6px); }
+  34%, 60% { opacity: 1; transform: none; }
+  68%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+
+@keyframes deal-stage-3 {
+  0%, 60% { opacity: 0; transform: translateY(-6px); }
+  68%, 100% { opacity: 1; transform: none; }
+}
+
+/* Aparición única del workspace en el héroe */
+.reveal {
+  animation: reveal 0.7s ease-out both;
+}
+
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Costura de aislamiento entre organizaciones */
+.seam {
+  background-color: var(--flujo);
+  box-shadow: 0 0 14px 0 rgba(91, 140, 255, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .travel-1,
+  .travel-2 {
+    animation: none;
+    opacity: 0;
+  }
+
+  .travel-3 {
+    animation: none;
+    opacity: 1;
+  }
+
+  .reveal {
+    animation: none;
+  }
+}
