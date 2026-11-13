@@ -69,20 +69,20 @@
 
 ## Fase 3: Infraestructura, Clientes Supabase y Middleware (`src/lib/`)
 
-- [ ] **T-3.1: Clientes SSR de Supabase y seguridad de claves**
+- [x] **T-3.1: Clientes SSR de Supabase y seguridad de claves**
   - Configurar `src/lib/supabase/client.ts` con la Publishable Key para clientes de navegador.
   - Configurar `src/lib/supabase/server.ts` con manejo de cookies para Server Components y Actions.
   - Configurar `src/lib/supabase/admin.ts` con Service Role exclusivamente para operaciones de servidor privilegiadas (alta atómica).
   - *Criterio de verificación:* Las claves privilegiadas no se importan en código accesible al navegador.
 
-- [ ] **T-3.2: Middleware de autenticación y protección de rutas**
+- [x] **T-3.2: Middleware de autenticación y protección de rutas**
   - Implementar `src/middleware.ts` para refresco de sesión.
   - Redirigir usuarios sin sesión a `/login`.
   - Redirigir usuarios con email pendiente de confirmación a `/verify-email`.
   - Proteger rutas administrativas `/settings/organization` para acceso exclusivo de Administradores.
   - *Criterio de verificación:* Intento de navegación de colaborador a rutas administrativas es interceptado y redirigido.
 
-- [ ] **T-3.3: Endpoint de callback para Google OAuth**
+- [x] **T-3.3: Endpoint de callback para Google OAuth**
   - Crear ruta `src/app/auth/callback/route.ts` para intercambiar el código OAuth y establecer sesión.
   - *Criterio de verificación:* Retorno con código OAuth exitoso inicia sesión y redirige al dashboard.
 

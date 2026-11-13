@@ -3,6 +3,7 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no aporte.
 
 ## Estado actual
+- **Fase 3 completada** (T-3.1 a T-3.3): `src/lib/supabase/` con `client.ts` (browser, Publishable Key), `server.ts` (cookies async de Next 15), `admin.ts` (Service Role, solo servidor); `src/middleware.ts` + `src/lib/supabase/middleware.ts` (refresco de sesión, rutas públicas `/-/login/register/verify-email/auth/callback/invite/*`, confinamiento de email sin confirmar a `/verify-email`, barrera admin para `/settings/organization` vía consulta de `profiles.role`); `src/app/auth/callback/route.ts` (intercambio OAuth con redirect a `/login?error=oauth` en fallo). **Build verde, tsc limpio, 98 tests en verde**.
 - **Fase 2 completada** (T-2.1 a T-2.3): lógica de dominio en `src/core/` — `auth/` (schemas registro/login/reenvío + `cooldown.ts` 60s), `organization/`, `invitation/` (schemas + `rules.ts` TTL 48h y transiciones), `member/` (schemas + `permissions.ts` matriz Opción B), `operational/` (customer, lead, task schemas). **98 tests Vitest en verde + `tsc --noEmit` limpio**.
 - **Fase 1 completada y aplicada en Supabase** (proyecto `vidbrbfmbdbpgcgwbfnv`): migraciones `initial_schema` + `security_hardening` aplicadas vía MCP; advisors limpios de hallazgos propios. Archivo local `supabase/migrations/20261103_001_initial_schema.sql` refleja el estado final del esquema.
 - Próxima fase: **Fase 3** — clientes Supabase en `src/lib/` (client/server/admin) + middleware de protección de rutas (T-3.1 a T-3.3).
@@ -25,6 +26,8 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - **Bug de Next 15.5.28**: `next build` falla con "Invariant: no direct app page entry found for /_not-found" si no existe `src/app/not-found.tsx`; añadirla lo resuelve (ya está en el repo, no borrarla).
 - **Zod v3 (no v4)**: usar API clásica (`z.string().email()`, `errorMap`); los campos opcionales de formularios se normalizan con `preprocess` (string vacío → `undefined`) antes de validar email/UUID/fecha.
 - **Cooldown**: el tiempo restante se acota a `[0, cooldownMs]` — un envío "a futuro" (desfase de reloj) no debe inflar la ventana.
+- **Next 15 + Supabase SSR**: `cookies()` es async (`await cookies()`); tipar `setAll(cookiesToSet: {name,value,options?: CookieOptions}[])` para evitar `any` implícito en Edge. Env vars: nomenclatura nueva `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` + `SUPABASE_SERVICE_ROLE_KEY`.
+- **Middleware asume "Confirm email" ON** (exigido por EARS-03): email sin confirmar se detecta con `!email_confirmed_at && !confirmed_at` (cubre null/undefined); validar contra flujo real en Fase 6. Middleware falla cerrado sin config: rutas protegidas → `/login`.
 
 ## Próximos pasos
-- Fase 3: clientes Supabase (`src/lib/supabase/client.ts`, `server.ts`, `admin.ts`) + `src/middleware.ts` + callback OAuth.
+- Fase 4: Server Actions (`registerWithOrganizationAction` atómica con admin client, login/logout/reenvío con cooldown, invitaciones, aceptación, operaciones comerciales).
