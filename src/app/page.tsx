@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 
 /* ── Datos del mock ────────────────────────────────────────────── */
 
@@ -254,9 +255,9 @@ function NavButton({
       ? 'rounded-md bg-faro px-4 py-2 text-sm font-semibold text-on-amber transition-colors hover:bg-faro-deep'
       : 'rounded-md px-4 py-2 text-sm font-medium text-ice transition-colors hover:text-faro';
   return (
-    <a href={href} className={classes}>
+    <Link href={href} className={classes}>
       {children}
-    </a>
+    </Link>
   );
 }
 
@@ -265,10 +266,10 @@ export default function HomePage() {
     <div className="min-h-screen">
       <header className="sticky top-0 z-10 border-b border-edge bg-void">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <a href="#" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <LogoMark />
             <span className="font-wide text-lg font-bold tracking-tight">Nexora</span>
-          </a>
+          </Link>
           <nav className="hidden items-center gap-7 text-sm text-mist md:flex">
             <a href="#producto" className="transition-colors hover:text-ice">
               Producto
@@ -281,10 +282,10 @@ export default function HomePage() {
             </a>
           </nav>
           <div className="flex items-center gap-2">
-            <NavButton href="#" variant="ghost">
+            <NavButton href="/login" variant="ghost">
               Entrar
             </NavButton>
-            <NavButton href="#empezar" variant="solid">
+            <NavButton href="/register" variant="solid">
               Crear tu organización
             </NavButton>
           </div>
@@ -305,12 +306,12 @@ export default function HomePage() {
                 organización. Nada se mezcla, nada se comparte.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="#empezar"
+                <Link
+                  href="/register"
                   className="rounded-md bg-faro px-5 py-3 text-sm font-semibold text-on-amber transition-colors hover:bg-faro-deep"
                 >
                   Crear tu organización
-                </a>
+                </Link>
                 <a
                   href="#producto"
                   className="rounded-md border border-edge px-5 py-3 text-sm font-medium text-ice transition-colors hover:border-faro"
@@ -411,12 +412,12 @@ export default function HomePage() {
             trabajar. Tarda menos de un minuto.
           </p>
           <div className="mt-8">
-            <a
-              href="#"
+            <Link
+              href="/register"
               className="inline-block rounded-md bg-faro px-6 py-3.5 text-sm font-semibold text-on-amber transition-colors hover:bg-faro-deep"
             >
               Crear tu organización
-            </a>
+            </Link>
           </div>
         </section>
       </main>
