@@ -117,26 +117,26 @@
 
 ## Fase 5: Interfaz de Usuario (`src/app/`)
 
-- [ ] **T-5.1: Pantallas públicas de autenticación**
+- [x] **T-5.1: Pantallas públicas de autenticación**
   - Construir `/login`, `/register` y `/verify-email` con temporizador de cuenta regresiva de 60s.
   - *Criterio de verificación:* Validación reactiva, accesibilidad y manejo claro de errores en español.
 
-- [ ] **T-5.2: Pantalla de aceptación de invitación privada**
+- [x] **T-5.2: Pantalla de aceptación de invitación privada**
   - Construir `/invite/[token]` mostrando datos del emisor y formulario de contraseña / Google OAuth.
   - *Criterio de verificación:* Invitaciones expiradas o revocadas muestran mensaje informativo y bloquean el formulario.
 
-- [ ] **T-5.3: Layout protegido y Dashboard comercial**
+- [x] **T-5.3: Layout protegido y Dashboard comercial**
   - Construir `src/app/(dashboard)/layout.tsx` con navegación adaptativa según el rol (Admin vs Colaborador).
   - Construir vista `/dashboard` con métricas e indicadores comerciales accesibles a ambos roles.
   - *Criterio de verificación:* Barra lateral muestra opciones según permisos (ocultando configuración corporativa a Colaboradores).
 
-- [ ] **T-5.4: Vistas de gestión de equipo y perfil**
+- [x] **T-5.4: Vistas de gestión de equipo y perfil**
   - Construir `/settings/team`: vista que muestra el directorio básico a Colaboradores y controles completos de invitación/cambio de rol a Administradores.
   - Construir `/settings/organization` (exclusiva para Administradores).
   - Construir `/settings/profile` (edición de nombre personal para ambos roles).
   - *Criterio de verificación:* Los colaboradores no visualizan botones ni formularios de invitación o cambio de rol.
 
-- [ ] **T-5.5: Vistas operativas comerciales (Colaboradores y Administradores)**
+- [x] **T-5.5: Vistas operativas comerciales (Colaboradores y Administradores)**
   - Construir `/customers`: listado, creación, edición y archivado de clientes.
   - Construir `/leads`: pipeline visual de oportunidades con cambio de etapas.
   - Construir `/tasks`: lista de tareas y modal de asignación a miembros activos de la empresa.

@@ -7,7 +7,7 @@
  * exception is mapped to a friendly Spanish message.
  */
 
-import { updateMemberRoleSchema, removeMemberSchema } from '@/core/member/member.schemas';
+import { updateMemberRoleSchema, removeMemberSchema, updateOwnProfileSchema } from '@/core/member/member.schemas';
 import { canChangeMemberRoles, canRemoveMembers } from '@/core/member/permissions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
@@ -69,4 +69,28 @@ export async function removeMemberAction(
   if (error) return failure(mapDatabaseError(error));
 
   return success({ memberId: parsed.data.memberId });
+}
+
+/** Own profile editing: display fields only; role/organization are immutable. */
+export async function updateOwnProfileAction(
+  input: unknown,
+): Promise<ActionResult<{ fullName: string }>> {
+  const context = await getCurrentProfile();
+  if (!context) return failure(AUTH_REQUIRED_MESSAGE);
+
+  const parsed = updateOwnProfileSchema.safeParse(input);
+  if (!parsed.success) return failure(firstZodError(parsed.error));
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      full_name: parsed.data.fullName,
+      avatar_url: parsed.data.avatarUrl ?? null,
+    })
+    .eq('id', context.user.id);
+
+  if (error) return failure(mapDatabaseError(error));
+
+  return success({ fullName: parsed.data.fullName });
 }
