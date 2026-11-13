@@ -5,6 +5,7 @@ import {
   canInviteMembers,
   canManageOrganization,
   canPerformOperations,
+  canPurgeRecords,
   canRemoveMembers,
   canViewAuditLog,
   hasPermission,
@@ -21,6 +22,7 @@ const ALL_PERMISSIONS: Permission[] = [
   'members.manage',
   'audit.view',
   'operations.manage',
+  'operations.purge',
   'profile.editOwn',
 ];
 
@@ -40,6 +42,7 @@ describe('permissions (Operational Permission Model - Option B)', () => {
       { name: 'canChangeMemberRoles', fn: canChangeMemberRoles },
       { name: 'canRemoveMembers', fn: canRemoveMembers },
       { name: 'canViewAuditLog', fn: canViewAuditLog },
+      { name: 'canPurgeRecords', fn: canPurgeRecords },
     ] as const;
 
     it.each(governanceChecks)('$name is granted to admin only', ({ fn }) => {

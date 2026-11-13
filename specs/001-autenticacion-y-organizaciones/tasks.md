@@ -90,24 +90,24 @@
 
 ## Fase 4: Server Actions y Lógica de Aplicación (`src/app/actions/`)
 
-- [ ] **T-4.1: Server Action de registro público atómico**
+- [x] **T-4.1: Server Action de registro público atómico**
   - Crear `registerWithOrganizationAction`: valida entrada, crea usuario en Auth, registra la nueva Organización y genera el perfil con rol `admin`.
   - *Criterio de verificación:* Creación consistente de los tres registros y envío de correo de confirmación.
 
-- [ ] **T-4.2: Server Actions de sesión y reenvío de correo**
+- [x] **T-4.2: Server Actions de sesión y reenvío de correo**
   - Crear `loginAction`, `logoutAction` y `resendVerificationEmailAction` con validación de cooldown de 60s.
   - *Criterio de verificación:* Reenvío antes de 60s es bloqueado sin consumir cuota de envío de correo.
 
-- [ ] **T-4.3: Server Actions de invitaciones y gestión de equipo**
+- [x] **T-4.3: Server Actions de invitaciones y gestión de equipo**
   - Crear `inviteMemberAction`, `resendInvitationAction` y `revokeInvitationAction` (restringidas a Administradores).
   - Crear `updateMemberRoleAction` y `removeMemberAction` con captura de excepciones del trigger de último admin.
   - *Criterio de verificación:* Petición de invitar o cambiar rol emitida por un colaborador es denegada; degradar al último admin devuelve error controlado.
 
-- [ ] **T-4.4: Server Action de aceptación de invitación**
+- [x] **T-4.4: Server Action de aceptación de invitación**
   - Crear `acceptInvitationAction`: valida vigencia del token, asocia las credenciales a la organización existente con el rol preasignado y marca la invitación como `accepted`.
   - *Criterio de verificación:* El usuario queda incorporado a la organización existente sin crear empresa paralela.
 
-- [ ] **T-4.5: Server Actions para operaciones comerciales (Opción B)**
+- [x] **T-4.5: Server Actions para operaciones comerciales (Opción B)**
   - Crear Server Actions para `customers`: crear, editar, listar y archivar.
   - Crear Server Actions para `leads`: crear, editar y actualizar etapas comerciales.
   - Crear Server Actions para `tasks`: crear, modificar y asignar a integrantes de la misma organización.

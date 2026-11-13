@@ -22,6 +22,7 @@ export type Permission =
   | 'members.manage'
   | 'audit.view'
   | 'operations.manage'
+  | 'operations.purge'
   | 'profile.editOwn';
 
 const ADMIN_PERMISSIONS: ReadonlySet<Permission> = new Set([
@@ -31,6 +32,7 @@ const ADMIN_PERMISSIONS: ReadonlySet<Permission> = new Set([
   'members.manage',
   'audit.view',
   'operations.manage',
+  'operations.purge',
   'profile.editOwn',
 ]);
 
@@ -79,6 +81,14 @@ export function canRemoveMembers(role: UserRole): boolean {
 /** Only admins can consult the activity history / audit log. */
 export function canViewAuditLog(role: UserRole): boolean {
   return hasPermission(role, 'audit.view');
+}
+
+/**
+ * Only admins can physically purge master records (customers, leads):
+ * collaborators archive instead of deleting (spec governance rules).
+ */
+export function canPurgeRecords(role: UserRole): boolean {
+  return hasPermission(role, 'operations.purge');
 }
 
 /**

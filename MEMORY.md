@@ -3,6 +3,7 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no aporte.
 
 ## Estado actual
+- **Fase 4 completada** (T-4.1 a T-4.5): Server Actions en `src/app/actions/` — `auth.ts` (registro atómico con rollback vía Service Role, login/logout, reenvío con cooldown contra `confirmation_sent_at`), `invitations.ts` (emisión/reenvío/revocación admin-only + `acceptInvitationAction` con alta confirmada, auto sign-in y rollback; `checkInvitationTokenAction` para la pantalla pública), `members.ts` (cambio de rol / baja con captura del trigger de último admin), `customers.ts`/`leads.ts`/`tasks.ts` (CRUD con `organization_id`/`created_by` derivados del server session, validación contextual de asignación con `canAssignTask`, purga solo admin). `shared.ts`: `ActionResult`, `getCurrentProfile`, `mapDatabaseError` (mapea excepciones de triggers), `findAuthUserByEmail` (listUsers paginado — esta versión de auth-js no tiene `getUserByEmail`). **Build verde, tsc limpio, 99 tests en verde**.
 - **Fase 3 completada** (T-3.1 a T-3.3): `src/lib/supabase/` con `client.ts` (browser, Publishable Key), `server.ts` (cookies async de Next 15), `admin.ts` (Service Role, solo servidor); `src/middleware.ts` + `src/lib/supabase/middleware.ts` (refresco de sesión, rutas públicas `/-/login/register/verify-email/auth/callback/invite/*`, confinamiento de email sin confirmar a `/verify-email`, barrera admin para `/settings/organization` vía consulta de `profiles.role`); `src/app/auth/callback/route.ts` (intercambio OAuth con redirect a `/login?error=oauth` en fallo). **Build verde, tsc limpio, 98 tests en verde**.
 - **Fase 2 completada** (T-2.1 a T-2.3): lógica de dominio en `src/core/` — `auth/` (schemas registro/login/reenvío + `cooldown.ts` 60s), `organization/`, `invitation/` (schemas + `rules.ts` TTL 48h y transiciones), `member/` (schemas + `permissions.ts` matriz Opción B), `operational/` (customer, lead, task schemas). **98 tests Vitest en verde + `tsc --noEmit` limpio**.
 - **Fase 1 completada y aplicada en Supabase** (proyecto `vidbrbfmbdbpgcgwbfnv`): migraciones `initial_schema` + `security_hardening` aplicadas vía MCP; advisors limpios de hallazgos propios. Archivo local `supabase/migrations/20261103_001_initial_schema.sql` refleja el estado final del esquema.
@@ -10,7 +11,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - **Landing pública diseñada** (identidad visual base): `src/app/page.tsx`, tokens en `globals.css`/`tailwind.config.ts` (paleta azul profundo + ámbar `faro` para acciones, azul `flujo` solo para datos), tipografía Archivo variable (eje wdth) vía `next/font`. Pieza central: mock del workspace con pipeline animado al cargar (Contacto→Propuesta→Cierre, respeta `prefers-reduced-motion`) y costura de aislamiento con otra organización visible al borde.
 
 ## Decisiones (y por qué)
-- **Permisos Operativos (Opción B)**: Colaboradores tienen autonomía completa para crear, consultar, modificar y archivar clientes, oportunidades y tareas dentro de su empresa; la administración organizacional, invitación y gobernanza de miembros queda reservada exclusivamente al Administrador. Matriz implementada en `src/core/member/permissions.ts` (fuente única de `ROLE_VALUES`).
+- **Permisos Operativos (Opción B)**: Colaboradores tienen autonomía completa para crear, consultar, modificar y archivar clientes, oportunidades y tareas dentro de su empresa; la administración organizacional, invitación y gobernanza de miembros queda reservada exclusivamente al Administrador. Matriz implementada en `src/core/member/permissions.ts` (fuente única de `ROLE_VALUES`); incluye `operations.purge` (solo admin) para la eliminación física de clientes/oportunidades.
 - **Defensa en Profundidad (Triggers + RLS)**:
   - RLS garantiza aislamiento multi-tenant para ambos roles.
   - Trigger `protect_profile_sensitive_columns` impide que un Colaborador eleve su `role` o cambie su `organization_id`.
@@ -18,6 +19,8 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
   - Trigger `check_last_admin_protection` con bloqueo transaccional `FOR UPDATE` previene la pérdida del último Administrador ante degradaciones concurrentes.
 - **Directorio Seguro**: Vista `organization_members_directory` (`security_invoker = true`) expone solo datos básicos de integrantes a los colaboradores.
 - **Política de contraseñas confirmada**: mínimo 8, máximo 72 caracteres (el tope de 72 respeta el límite bcrypt de Supabase Auth). Implementada en `auth.schemas.ts`.
+- **Duplicados de email**: verificados contra `profiles.email` (UNIQUE global; todo usuario Nexora tiene perfil) — esta versión de auth-js no tiene `getUserByEmail`. El reenvío de confirmación usa `findAuthUserByEmail` (listUsers paginado, máx 10k) solo para leer `confirmation_sent_at`.
+- **Entrega de correos de invitación (decisión pendiente)**: Nexora aún no opera SMTP/Edge Function de envío propio; `inviteMemberAction`/`resendInvitationAction` retornan el token y la UI lo entrega (copy/paste o proveedor externo). Definir mecanismo de envío real más adelante.
 - **Cardinalidad 1:1 estricta**: Un usuario pertenece exclusivamente a una sola Organización.
 
 ## Aprendizajes y errores a evitar
@@ -30,4 +33,4 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - **Middleware asume "Confirm email" ON** (exigido por EARS-03): email sin confirmar se detecta con `!email_confirmed_at && !confirmed_at` (cubre null/undefined); validar contra flujo real en Fase 6. Middleware falla cerrado sin config: rutas protegidas → `/login`.
 
 ## Próximos pasos
-- Fase 4: Server Actions (`registerWithOrganizationAction` atómica con admin client, login/logout/reenvío con cooldown, invitaciones, aceptación, operaciones comerciales).
+- Fase 5: UI (`/login`, `/register`, `/verify-email` con temporizador 60s, `/invite/[token]`, layout dashboard con navegación por rol, vistas de equipo/perfil/organización y vistas operativas).
