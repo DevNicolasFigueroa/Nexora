@@ -43,7 +43,7 @@
 
 ## Fase 2: Lógica de Dominio y Validaciones Aisladas (`src/core/`)
 
-- [ ] **T-2.1: Esquemas de validación Zod**
+- [x] **T-2.1: Esquemas de validación Zod**
   - Crear `src/core/auth/auth.schemas.ts`: esquemas de registro público (con nombre de organización), login y confirmación.
   - Crear `src/core/organization/organization.schemas.ts`: actualización de datos corporativos.
   - Crear `src/core/invitation/invitation.schemas.ts`: emisión y aceptación de invitaciones.
@@ -51,14 +51,14 @@
   - Crear `src/core/operational/`: esquemas para clientes (`customer.schemas.ts`), oportunidades (`lead.schemas.ts`) y tareas (`task.schemas.ts`).
   - *Criterio de verificación:* Validaciones Zod rechazan entradas vacías, etapas inválidas y roles no permitidos.
 
-- [ ] **T-2.2: Reglas puras y matriz de permisos (Opción B)**
+- [x] **T-2.2: Reglas puras y matriz de permisos (Opción B)**
   - Implementar `src/core/member/permissions.ts`: matriz completa de permisos (operaciones comerciales permitidas para ambos roles, gobernanza y administración restringidas exclusivamente a admin).
   - Implementar `src/core/auth/cooldown.ts`: cálculo y validación de intervalo de 60s para reenvío de correo.
   - Implementar `src/core/invitation/invitation.rules.ts`: validación pura de expiración de 48h y transiciones de estado.
   - Implementar regla de asignación contextual de tareas intra-organización.
   - *Criterio de verificación:* Funciones deterministas puras sin llamadas a red ni dependencias externas.
 
-- [ ] **T-2.3: Pruebas unitarias de dominio con Vitest**
+- [x] **T-2.3: Pruebas unitarias de dominio con Vitest**
   - Crear `src/core/member/permissions.test.ts`: verificar permisos operativos para colaboradores y denegación de permisos administrativos.
   - Crear `src/core/auth/cooldown.test.ts`: evaluar tiempos de espera y enfriamiento de reenvíos.
   - Crear `src/core/invitation/invitation.rules.test.ts`: evaluar invitaciones vigentes y expiradas a 48h.
