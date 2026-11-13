@@ -18,12 +18,12 @@
 
 ## Fase 1: Esquema de Base de Datos y Seguridad (Supabase / PostgreSQL)
 
-- [ ] **T-1.1: Script SQL de migración para tablas base y operativas**
+- [x] **T-1.1: Script SQL de migración para tablas base y operativas**
   - Crear archivo `supabase/migrations/20261103_001_initial_schema.sql` con las tablas `organizations`, `profiles`, `invitations`, `customers`, `leads` y `tasks`.
   - Configurar claves primarias, foráneas, restricciones `CHECK` e índices de rendimiento (`organization_id`, `status`, `stage`).
   - *Criterio de verificación:* Migración sin errores de sintaxis; tablas creadas con integridad referencial.
 
-- [ ] **T-1.2: Funciones auxiliares, vista segura de directorio y políticas RLS**
+- [x] **T-1.2: Funciones auxiliares, vista segura de directorio y políticas RLS**
   - Implementar funciones `current_user_organization_id()` y `current_user_role()`.
   - Crear vista segura `organization_members_directory` con `security_invoker = true` para consulta limitada de integrantes.
   - Habilitar RLS en todas las tablas:
@@ -33,7 +33,7 @@
     - `customers`, `leads`, `tasks`: SELECT, INSERT, UPDATE permitidos a ambos roles dentro de su `organization_id`; DELETE físico de clientes/leads exclusivo de admin.
   - *Criterio de verificación:* Consultas SQL desde rol colaborador permiten CRUD operativo en su empresa pero bloquean mutaciones en `invitations` y `organizations`.
 
-- [ ] **T-1.3: Triggers de integridad, protección de columnas y gobernanza**
+- [x] **T-1.3: Triggers de integridad, protección de columnas y gobernanza**
   - Implementar trigger `trg_protect_profile_columns` en `profiles` para impedir que colaboradores modifiquen `role` u `organization_id`.
   - Implementar trigger `trg_validate_task_assignment` en `tasks` para verificar que `assigned_to` pertenezca a la misma organización.
   - Implementar trigger `trg_last_admin_protection` con bloqueo transaccional `FOR UPDATE` para proteger al último admin contra eliminaciones o degradaciones concurrentes.

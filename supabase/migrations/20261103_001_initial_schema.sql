@@ -11,6 +11,11 @@
 --   anónimo no puede leer ni mutar nada.
 -- - `invitations.token` es UNIQUE y crea su propio índice; no se duplica con
 --   un índice adicional.
+--
+-- Estado aplicado en el proyecto Supabase como dos migraciones:
+-- `initial_schema` (todo lo siguiente) y `security_hardening` (endurecimiento
+-- reportado por los advisors: search_path inmutable, control de EXECUTE,
+-- índice de FK y fusión de políticas UPDATE de profiles).
 -- ============================================================================
 
 -- ============================================================================
@@ -20,6 +25,7 @@
 CREATE OR REPLACE FUNCTION public.touch_updated_at()
 RETURNS TRIGGER
 LANGUAGE plpgsql
+SET search_path = ''
 AS $$
 BEGIN
     NEW.updated_at := timezone('utc'::text, now());
@@ -79,6 +85,7 @@ CREATE TABLE public.invitations (
 
 CREATE INDEX idx_invitations_org_status ON public.invitations(organization_id, status);
 CREATE INDEX idx_invitations_email ON public.invitations(email);
+CREATE INDEX idx_invitations_invited_by ON public.invitations(invited_by_user_id);
 
 CREATE TRIGGER trg_invitations_touch_updated_at
 BEFORE UPDATE ON public.invitations
@@ -196,6 +203,23 @@ AS $$
     SELECT role FROM public.profiles WHERE id = auth.uid();
 $$;
 
+-- Control de EXECUTE sobre funciones SECURITY DEFINER (advisors Supabase):
+-- - Funciones de triggers: solo las invoca Postgres al disparar el trigger.
+-- - Funciones auxiliares de contexto: las evalúan las políticas RLS al
+--   ejecutar consultas de usuarios autenticados.
+REVOKE EXECUTE ON FUNCTION public.protect_profile_sensitive_columns()
+FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.validate_task_assignment()
+FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.check_last_admin_protection()
+FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.current_user_organization_id()
+FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.current_user_role()
+FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.current_user_organization_id() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.current_user_role() TO authenticated;
+
 -- ============================================================================
 -- 4. Row Level Security
 -- ============================================================================
@@ -233,21 +257,21 @@ TO authenticated
 USING (organization_id = (SELECT public.current_user_organization_id()));
 
 -- Edición de datos personales propios (el trigger protege role/organization_id)
-CREATE POLICY profiles_update_self
-ON public.profiles
-FOR UPDATE
-TO authenticated
-USING (id = (SELECT auth.uid()));
-
--- Administración de integrantes de la propia organización (roles, desactivación)
-CREATE POLICY profiles_update_admin
+-- y administración de integrantes de la propia organización por el Administrador.
+-- Se fusionan en una sola política permissiva con OR por rendimiento RLS
+-- (advisors: multiple_permissive_policies); la semántica es idéntica.
+CREATE POLICY profiles_update
 ON public.profiles
 FOR UPDATE
 TO authenticated
 USING (
-    organization_id = (SELECT public.current_user_organization_id())
-    AND (SELECT public.current_user_role()) = 'admin'
-);
+    id = (SELECT auth.uid())
+    OR (
+        organization_id = (SELECT public.current_user_organization_id())
+        AND (SELECT public.current_user_role()) = 'admin'
+    )
+)
+WITH CHECK (organization_id = (SELECT public.current_user_organization_id()));
 
 CREATE POLICY profiles_delete_admin
 ON public.profiles
@@ -397,6 +421,7 @@ CREATE OR REPLACE FUNCTION public.protect_profile_sensitive_columns()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
     -- Si quien ejecuta la mutación no es Administrador activo de la organización
@@ -423,6 +448,7 @@ CREATE OR REPLACE FUNCTION public.validate_task_assignment()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 DECLARE
     assignee_org_id UUID;
@@ -452,6 +478,7 @@ CREATE OR REPLACE FUNCTION public.check_last_admin_protection()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 DECLARE
     admin_count INT;
