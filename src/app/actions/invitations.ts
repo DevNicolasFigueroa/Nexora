@@ -27,6 +27,8 @@ import {
 } from '@/core/member/permissions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { buildInvitationUrl, sendEmail } from '@/lib/email/resend';
+import { invitationEmailTemplate } from '@/lib/email/templates';
 import {
   failure,
   success,
@@ -38,13 +40,18 @@ import {
 
 /**
  * T-4.3: emission of an invitation (admin only).
- * NOTE (email delivery): Nexora does not operate its own SMTP yet, so the
- * action returns the invitation token and the UI delivers the link
- * (copy/paste or a configured email provider in a later iteration).
+ * Sends the invitation email through Resend (Opción C). Without email
+ * configuration the action degrades gracefully: it still returns the
+ * invitation URL so the admin can deliver the link manually.
  */
 export async function inviteMemberAction(
   input: unknown,
-): Promise<ActionResult<{ token: string; email: string }>> {
+): Promise<ActionResult<{
+  token: string;
+  email: string;
+  invitationUrl: string;
+  emailDelivered: boolean;
+}>> {
   const context = await getCurrentProfile();
   if (!context) return failure(AUTH_REQUIRED_MESSAGE);
   if (!canInviteMembers(context.profile.role)) {
@@ -98,13 +105,35 @@ export async function inviteMemberAction(
     return failure('No se pudo crear la invitación. Inténtalo nuevamente.');
   }
 
-  return success({ token, email });
+  // Deliver the invitation by email (Opción C); falls back to the copyable
+  // link when Resend is not configured or the send fails.
+  const { data: organization } = await supabase
+    .from('organizations')
+    .select('name')
+    .eq('id', context.profile.organization_id)
+    .single();
+
+  const template = invitationEmailTemplate({
+    organizationName: organization?.name ?? 'Tu organización',
+    inviterName: context.profile.full_name,
+    role,
+    token,
+  });
+
+  const sendResult = await sendEmail({ to: email, ...template });
+
+  return success({
+    token,
+    email,
+    invitationUrl: buildInvitationUrl(token),
+    emailDelivered: sendResult.delivered,
+  });
 }
 
 /** T-4.3: resend (EARS-04.4): invalidates the old link, issues a fresh 48h one. */
 export async function resendInvitationAction(
   input: unknown,
-): Promise<ActionResult<{ token: string }>> {
+): Promise<ActionResult<{ token: string; invitationUrl: string; emailDelivered: boolean }>> {
   const context = await getCurrentProfile();
   if (!context) return failure(AUTH_REQUIRED_MESSAGE);
   if (!canInviteMembers(context.profile.role)) {
@@ -117,7 +146,7 @@ export async function resendInvitationAction(
   const supabase = await createSupabaseServerClient();
   const { data: invitation } = await supabase
     .from('invitations')
-    .select('id, status, expires_at, token')
+    .select('id, status, expires_at, token, email, role')
     .eq('id', parsed.data.invitationId)
     .maybeSingle();
 
@@ -150,7 +179,26 @@ export async function resendInvitationAction(
     return failure('No se pudo reenviar la invitación. Inténtalo nuevamente.');
   }
 
-  return success({ token: newToken });
+  const { data: organization } = await supabase
+    .from('organizations')
+    .select('name')
+    .eq('id', context.profile.organization_id)
+    .single();
+
+  const template = invitationEmailTemplate({
+    organizationName: organization?.name ?? 'Tu organización',
+    inviterName: context.profile.full_name,
+    role: invitation.role,
+    token: newToken,
+  });
+
+  const sendResult = await sendEmail({ to: invitation.email, ...template });
+
+  return success({
+    token: newToken,
+    invitationUrl: buildInvitationUrl(newToken),
+    emailDelivered: sendResult.delivered,
+  });
 }
 
 /** T-4.3: revocation — only pending/expired invitations can be revoked. */

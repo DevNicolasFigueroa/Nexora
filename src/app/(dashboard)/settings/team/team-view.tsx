@@ -100,7 +100,11 @@ export function TeamView({
       }
 
       setInviteEmail('');
-      setNotice('Invitación creada. Copia el enlace y entrégalo a la persona invitada.');
+      setNotice(
+        result.data.emailDelivered
+          ? `Invitación enviada a ${result.data.email}. Vence en 48 horas; también puedes copiar el enlace.`
+          : 'Invitación creada. Copia el enlace y entrégalo a la persona invitada.',
+      );
       router.refresh();
     });
   }
@@ -117,10 +121,23 @@ export function TeamView({
   }
 
   function handleResend(invitation: InvitationRow) {
-    run(
-      () => resendInvitationAction({ invitationId: invitation.id }),
-      'Invitación reenviada con un nuevo enlace válido por 48 horas.',
-    );
+    startTransition(async () => {
+      setError(null);
+      setNotice(null);
+      const result = await resendInvitationAction({ invitationId: invitation.id });
+
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+
+      setNotice(
+        result.data.emailDelivered
+          ? 'Invitación reenviada por correo con un nuevo enlace válido por 48 horas.'
+          : 'Invitación reenviada con un nuevo enlace válido por 48 horas. Cópialo y entrégalo manualmente.',
+      );
+      router.refresh();
+    });
   }
 
   function handleRevoke(invitation: InvitationRow) {
