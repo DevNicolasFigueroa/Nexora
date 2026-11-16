@@ -1,64 +1,64 @@
 import type { Metadata } from "next";
 
-import { Tarjeta } from "@/components/ui/Tarjeta";
+import { Card } from "@/components/ui/Card";
 
 export const metadata: Metadata = {
   title: "Panel de control",
 };
 
-interface Lectura {
-  etiqueta: string;
-  valor: string;
-  nota: string;
+interface Reading {
+  label: string;
+  value: string;
+  note: string;
 }
 
-/** Lecturas del panel: se conectarán con los datos reales en próximas fases. */
-const lecturas: readonly Lectura[] = [
+/** Panel readings: they will connect to real data in later phases. */
+const readings: readonly Reading[] = [
   {
-    etiqueta: "Clientes activos",
-    valor: "—",
-    nota: "Se conectará con tus datos próximamente.",
+    label: "Clientes activos",
+    value: "—",
+    note: "Se conectará con tus datos próximamente.",
   },
   {
-    etiqueta: "Oportunidades abiertas",
-    valor: "—",
-    nota: "Se conectará con tus datos próximamente.",
+    label: "Oportunidades abiertas",
+    value: "—",
+    note: "Se conectará con tus datos próximamente.",
   },
   {
-    etiqueta: "Tareas por vencer",
-    valor: "—",
-    nota: "Se conectará con tus datos próximamente.",
+    label: "Tareas por vencer",
+    value: "—",
+    note: "Se conectará con tus datos próximamente.",
   },
 ];
 
-export default function PaginaDashboard() {
+export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl">Panel de control</h1>
-        <p className="mt-1 text-sm text-primer-plano-suave">
+        <p className="mt-1 text-sm text-foreground-soft">
           Actividad y resumen de tu empresa en un vistazo.
         </p>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
-        {lecturas.map((lectura) => (
-          <Tarjeta key={lectura.etiqueta}>
-            <p className="text-sm text-primer-plano-suave">{lectura.etiqueta}</p>
-            <p className="mt-2 font-lectura text-3xl font-semibold">
-              {lectura.valor}
+        {readings.map((reading) => (
+          <Card key={reading.label}>
+            <p className="text-sm text-foreground-soft">{reading.label}</p>
+            <p className="mt-2 font-mono text-3xl font-semibold">
+              {reading.value}
             </p>
-            <p className="mt-3 text-xs text-primer-plano-suave/70">
-              {lectura.nota}
+            <p className="mt-3 text-xs text-foreground-soft/70">
+              {reading.note}
             </p>
-          </Tarjeta>
+          </Card>
         ))}
       </div>
-      <Tarjeta>
-        <p className="text-sm text-primer-plano-suave">
+      <Card>
+        <p className="text-sm text-foreground-soft">
           Los módulos de clientes, oportunidades y tareas llegarán con las
           próximas fases del desarrollo.
         </p>
-      </Tarjeta>
+      </Card>
     </div>
   );
 }

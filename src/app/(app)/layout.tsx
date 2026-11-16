@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 
-import { BarraLateral } from "@/components/layout/BarraLateral";
+import { Sidebar } from "@/components/layout/Sidebar";
 
-export default function LayoutAplicacion({
+export default function AppLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
     <div className="flex min-h-dvh">
-      <BarraLateral />
+      <Sidebar />
       <main className="flex-1 p-6 md:p-8">{children}</main>
     </div>
   );

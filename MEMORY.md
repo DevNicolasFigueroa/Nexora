@@ -7,8 +7,8 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Estructura base lista: Next.js (App Router) + TypeScript estricto, Tailwind CSS v4, Supabase + PostgreSQL, Zod, Vitest + Playwright.
 - `docs/constitution.md` (v1, 6 principios) y `AGENTS.md` vigentes.
 - MCP de Supabase conectado y verificado (proyecto `bulqrbsiwwsdrqpngijs`, OAuth vía `/mcps`); el proyecto remoto está vacío: 0 tablas, 0 migraciones.
-- Identidad visual "consola de mando" aplicada a landing, login y shell del panel.
-- **Spec 001 (autenticación y organizaciones) APROBADA** en `specs/001-auth-organizations/spec.md`. Siguiente fase: plan técnico → implementación.
+- Identidad visual "consola de mando" aplicada a landing, login y shell del panel. **Tokens renombrados a inglés** (ink, surface, surface-raised, line, foreground, foreground-soft, action, success, warning; fuentes grotesk/plex-sans/plex-mono) en `src/app/globals.css`.
+- **Spec 001 en marcha:** spec + plan + tasks en `specs/001-auth-organizations/`. Ramas: `main` (solo probado) ← `develop` ← `001-auth-organizations` (trabajo). **Tarea 1 completada:** toda la base de código migrada a inglés (env, browser/server, types, validations, Button, Card, Sidebar, LiveConsole, tests). Siguiente: tarea 2 (migración de BD vía MCP).
 
 ## Decisiones (y por qué)
 
@@ -35,4 +35,4 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 - Plan técnico de la spec 001 (arquitectura, nombres de tablas/código en inglés, flujo de migración) y luego implementación con pruebas.
 - Reconstruir el esquema multiempresa en inglés sobre el proyecto remoto de Supabase (vía MCP) y regenerar `src/lib/types/database.ts`.
-- Opcional: migrar a inglés los identificadores actuales en español (`crearClienteSupabase`, `esquemaInicioSesion`, `Tarjeta`, `Boton`...).
+- Opcional: ~~migrar a inglés los identificadores en español~~ **Hecho en la tarea 1** (env, browser/server, types, validations, Button, Card, Sidebar, LiveConsole).

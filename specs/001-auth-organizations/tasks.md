@@ -2,7 +2,7 @@
 
 Cada tarea termina en verde: `lint`, `typecheck`, `test` (y `build` en las de BD/UI). Los commits ocurren en la rama `001-auth-organizations` con aprobación explícita del usuario.
 
-- [ ] **1. Base en inglés:** renombrar `entorno.ts → env.ts`, clientes Supabase (`cliente → browser`, `servidor → server`), `tipos → types`, `validaciones → validations` (auth.ts, organization.ts), componentes (`Boton → Button`, `Tarjeta → Card`, `BarraLateral → Sidebar`, `ConsolaActividad → LiveConsole`), pruebas (`esquemas.test → schemas.test`, `configurar → setup`, `acceso.spec → access.spec`). Sin cambios de comportamiento.
+- [x] **1. Base en inglés:** renombrar `entorno.ts → env.ts`, clientes Supabase (`cliente → browser`, `servidor → server`), `tipos → types`, `validaciones → validations` (auth.ts, organization.ts), componentes (`Boton → Button`, `Tarjeta → Card`, `BarraLateral → Sidebar`, `ConsolaActividad → LiveConsole`), pruebas (`esquemas.test → schemas.test`, `configurar → setup`, `acceso.spec → access.spec`). Sin cambios de comportamiento.
 - [ ] **2. Migración de BD:** aplicar `initial_multi_tenant_schema` al proyecto remoto vía MCP (tablas, helpers en `private`, trigger, RLS), advisors en verde, regenerar `src/lib/types/database.ts`.
 - [ ] **3. Configuración de Auth:** Confirm email activado, Site URL + redirect `/auth/confirm`, plantilla de correo en español.
 - [ ] **4. Validaciones:** `registrationSchema`, `signInSchema`, `organizationSchema` (name requerido, slug opcional y normalizable) + pruebas unitarias de cada regla y mensaje.

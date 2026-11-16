@@ -3,21 +3,21 @@ import { IBM_Plex_Mono, IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 
 import "./globals.css";
 
-const fuenteDisplay = Space_Grotesk({
+const groteskFont = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--fuente-display",
+  variable: "--font-grotesk",
 });
 
-const fuenteCuerpo = IBM_Plex_Sans({
+const plexSansFont = IBM_Plex_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  variable: "--fuente-cuerpo",
+  variable: "--font-plex-sans",
 });
 
-const fuenteLectura = IBM_Plex_Mono({
+const plexMonoFont = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["500", "600"],
-  variable: "--fuente-lectura",
+  variable: "--font-plex-mono",
 });
 
 export const metadata: Metadata = {
@@ -29,15 +29,15 @@ export const metadata: Metadata = {
     "Plataforma de gestión multiempresa para pequeñas empresas de servicios: clientes, oportunidades y tareas en un único centro de mando.",
 };
 
-export default function LayoutRaiz({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="es"
-      className={`${fuenteDisplay.variable} ${fuenteCuerpo.variable} ${fuenteLectura.variable}`}
+      className={`${groteskFont.variable} ${plexSansFont.variable} ${plexMonoFont.variable}`}
     >
-      <body className="min-h-dvh bg-tinta font-cuerpo text-primer-plano antialiased">
+      <body className="min-h-dvh bg-ink font-body text-foreground antialiased">
         {children}
       </body>
     </html>

@@ -8,7 +8,7 @@ export default defineConfig({
     // Pruebas unitarias y de componentes.
     include: ["tests/unit/**/*.test.{ts,tsx}"],
     environment: "jsdom",
-    setupFiles: ["tests/unit/configurar.ts"],
+    setupFiles: ["tests/unit/setup.ts"],
   },
   resolve: {
     alias: {

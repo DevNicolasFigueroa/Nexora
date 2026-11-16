@@ -1,65 +1,65 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-import { ConsolaActividad } from "@/components/marketing/ConsolaActividad";
+import { LiveConsole } from "@/components/marketing/LiveConsole";
 
 export const metadata: Metadata = {
   title: "Nexora",
 };
 
-type Senal = "cierre" | "accion" | "atencion";
+type Signal = "success" | "action" | "attention";
 
-interface Canal {
-  senal: Senal;
-  nombre: string;
-  descripcion: string;
+interface Channel {
+  signal: Signal;
+  name: string;
+  description: string;
 }
 
-const canales: readonly Canal[] = [
+const channels: readonly Channel[] = [
   {
-    senal: "accion",
-    nombre: "Panel de control",
-    descripcion: "La actividad de tu empresa, en un vistazo.",
+    signal: "action",
+    name: "Panel de control",
+    description: "La actividad de tu empresa, en un vistazo.",
   },
   {
-    senal: "accion",
-    nombre: "Clientes",
-    descripcion: "Quién es quién en tu cartera.",
+    signal: "action",
+    name: "Clientes",
+    description: "Quién es quién en tu cartera.",
   },
   {
-    senal: "cierre",
-    nombre: "Oportunidades",
-    descripcion: "Cada trato, con su estado a la vista.",
+    signal: "success",
+    name: "Oportunidades",
+    description: "Cada trato, con su estado a la vista.",
   },
   {
-    senal: "atencion",
-    nombre: "Tareas",
-    descripcion: "Qué vence, qué está hecho y qué falta.",
+    signal: "attention",
+    name: "Tareas",
+    description: "Qué vence, qué está hecho y qué falta.",
   },
 ];
 
-const colorPorSenal: Record<Senal, string> = {
-  cierre: "bg-cierre",
-  accion: "bg-nexo",
-  atencion: "bg-atencion",
+const colorBySignal: Record<Signal, string> = {
+  success: "bg-success",
+  action: "bg-action",
+  attention: "bg-warning",
 };
 
-export default function PaginaInicio() {
+export default function HomePage() {
   return (
-    <div className="min-h-dvh bg-tinta text-primer-plano">
-      <header className="border-b border-trama">
+    <div className="min-h-dvh bg-ink text-foreground">
+      <header className="border-b border-line">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <span className="font-lectura text-base font-semibold">◈ Nexora</span>
+          <span className="font-mono text-base font-semibold">◈ Nexora</span>
           <nav className="flex items-center gap-6 text-sm">
             <Link
-              href="#canales"
-              className="text-primer-plano-suave transition-colors hover:text-nexo"
+              href="#channels"
+              className="text-foreground-soft transition-colors hover:text-action"
             >
               Canales
             </Link>
             <Link
               href="/login"
-              className="text-primer-plano-suave transition-colors hover:text-nexo"
+              className="text-foreground-soft transition-colors hover:text-action"
             >
               Iniciar sesión
             </Link>
@@ -68,64 +68,65 @@ export default function PaginaInicio() {
       </header>
 
       <main>
-        <section className="rejilla-nexos border-b border-trama">
+        <section className="hero-grid border-b border-line">
           <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 lg:grid-cols-[1fr_minmax(360px,440px)] lg:py-28">
             <div>
               <h1 className="font-display text-4xl leading-tight md:text-5xl">
                 Nexora, el centro de mando de tu empresa.
               </h1>
-              <p className="mt-5 max-w-prose text-lg text-primer-plano-suave">
+              <p className="mt-5 max-w-prose text-lg text-foreground-soft">
                 Clientes, oportunidades y tareas de toda tu organización,
                 reunidas en una consola única.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link
                   href="/dashboard"
-                  className="rounded-md bg-nexo px-5 py-2.5 text-sm font-semibold text-tinta transition-colors hover:bg-nexo/85"
+                  className="rounded-md bg-action px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-action/85"
                 >
                   Abrir la consola
                 </Link>
-                <span className="text-sm text-primer-plano-suave">
+                <span className="text-sm text-foreground-soft">
                   Cada organización ve solo lo suyo.
                 </span>
               </div>
             </div>
-            <ConsolaActividad />
+            <LiveConsole />
           </div>
         </section>
 
-        <section id="canales" className="mx-auto max-w-6xl px-6 py-16 md:py-20">
+        <section id="channels" className="mx-auto max-w-6xl px-6 py-16 md:py-20">
           <h2 className="font-display text-2xl md:text-3xl">
             Todo el negocio, en cuatro canales.
           </h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {canales.map((canal) => (
+            {channels.map((channel) => (
               <div
-                key={canal.nombre}
-                className="rounded-xl border border-trama bg-panel p-6"
+                key={channel.name}
+                className="rounded-xl border border-line bg-surface p-6"
               >
                 <div className="flex items-center gap-3">
                   <span
                     aria-hidden
-                    className={`size-2 rounded-full ${colorPorSenal[canal.senal]}`}
+                    className={`size-2 rounded-full ${colorBySignal[channel.signal]}`}
                   />
-                  <h3 className="font-display text-lg">{canal.nombre}</h3>
+                  <h3 className="font-display text-lg">{channel.name}</h3>
                 </div>
-                <p className="mt-2 text-sm text-primer-plano-suave">
-                  {canal.descripcion}
+                <p className="mt-2 text-sm text-foreground-soft">
+                  {channel.description}
                 </p>
               </div>
             ))}
           </div>
-          <p className="mt-6 max-w-prose text-sm text-primer-plano-suave">
+          <p className="mt-6 max-w-prose text-sm text-foreground-soft">
             Cada canal abrirá con las próximas fases del desarrollo, siguiendo
-            las especificaciones de <code className="font-lectura text-xs text-nexo">specs/</code>.
+            las especificaciones de{" "}
+            <code className="font-mono text-xs text-action">specs/</code>.
           </p>
         </section>
       </main>
 
-      <footer className="border-t border-trama">
-        <div className="mx-auto max-w-6xl px-6 py-6 text-xs text-primer-plano-suave">
+      <footer className="border-t border-line">
+        <div className="mx-auto max-w-6xl px-6 py-6 text-xs text-foreground-soft">
           © 2026 Nexora
         </div>
       </footer>

@@ -1,54 +1,53 @@
 @import "tailwindcss";
 
 /*
- * Sistema visual de Nexora: "consola de mando".
- * Cada señal tiene significado: nexo = acción, cierre = logro, atencion = vence.
- * Los nombres de tokens van en inglés (código); los textos de UI, en español.
+ * Nexora visual system: "command console".
+ * Every signal has a meaning: action = cyan, success = green, warning = amber.
  */
 @theme inline {
-  --font-display: var(--fuente-display), sans-serif;
-  --font-cuerpo: var(--fuente-cuerpo), system-ui, sans-serif;
-  --font-lectura: var(--fuente-lectura), monospace;
+  --font-display: var(--font-grotesk), sans-serif;
+  --font-body: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), monospace;
 
-  --color-tinta: #0b1120;
-  --color-panel: #111b30;
-  --color-panel-alto: #17233e;
-  --color-trama: #22335a;
-  --color-primer-plano: #eaf0fa;
-  --color-primer-plano-suave: #94a3c7;
-  --color-nexo: #4fd6ff;
-  --color-cierre: #4ae39b;
-  --color-atencion: #ffc24b;
+  --color-ink: #0b1120;
+  --color-surface: #111b30;
+  --color-surface-raised: #17233e;
+  --color-line: #22335a;
+  --color-foreground: #eaf0fa;
+  --color-foreground-soft: #94a3c7;
+  --color-action: #4fd6ff;
+  --color-success: #4ae39b;
+  --color-warning: #ffc24b;
 }
 
 ::selection {
-  background-color: color-mix(in oklab, var(--color-nexo) 32%, transparent);
+  background-color: color-mix(in oklab, var(--color-action) 32%, transparent);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-nexo);
+  outline: 2px solid var(--color-action);
   outline-offset: 2px;
 }
 
 /*
- * Retícula de nexos del héroe: la trama representa las conexiones de cada
- * organización con el centro de mando. Un solo resplandor, sin más decoración.
+ * Hero node grid: the lattice represents each organization's connection
+ * to the command center. A single glow, no further decoration.
  */
-.rejilla-nexos {
+.hero-grid {
   background-image:
     radial-gradient(
       60rem 32rem at 72% 42%,
-      color-mix(in oklab, var(--color-nexo) 9%, transparent),
+      color-mix(in oklab, var(--color-action) 9%, transparent),
       transparent 70%
     ),
     linear-gradient(
       to right,
-      color-mix(in oklab, var(--color-trama) 60%, transparent) 1px,
+      color-mix(in oklab, var(--color-line) 60%, transparent) 1px,
       transparent 1px
     ),
     linear-gradient(
       to bottom,
-      color-mix(in oklab, var(--color-trama) 60%, transparent) 1px,
+      color-mix(in oklab, var(--color-line) 60%, transparent) 1px,
       transparent 1px
     );
   background-size:
@@ -57,8 +56,8 @@
     44px 44px;
 }
 
-/* Arranque del feed de la consola: una única secuencia al cargar la página. */
-@keyframes encender-fila {
+/* Console feed boot-up: a single sequence on page load. */
+@keyframes row-in {
   from {
     opacity: 0;
     transform: translateY(6px);
@@ -69,39 +68,39 @@
   }
 }
 
-.fila-consola {
+.console-row {
   opacity: 0;
-  animation: encender-fila 0.5s ease-out forwards;
+  animation: row-in 0.5s ease-out forwards;
 }
-.fila-consola:nth-child(1) {
+.console-row:nth-child(1) {
   animation-delay: 0.15s;
 }
-.fila-consola:nth-child(2) {
+.console-row:nth-child(2) {
   animation-delay: 0.35s;
 }
-.fila-consola:nth-child(3) {
+.console-row:nth-child(3) {
   animation-delay: 0.55s;
 }
-.fila-consola:nth-child(4) {
+.console-row:nth-child(4) {
   animation-delay: 0.75s;
 }
 
-@keyframes latir {
+@keyframes pulse {
   50% {
     opacity: 0.3;
   }
 }
-.punto-latido {
-  animation: latir 2.4s ease-in-out infinite;
+.pulse-dot {
+  animation: pulse 2.4s ease-in-out infinite;
 }
 
-/* Accesibilidad: sin movimientos para quien los reduce. */
+/* Accessibility: no motion for users who reduce it. */
 @media (prefers-reduced-motion: reduce) {
-  .fila-consola {
+  .console-row {
     opacity: 1;
     animation: none;
   }
-  .punto-latido {
+  .pulse-dot {
     animation: none;
   }
 }

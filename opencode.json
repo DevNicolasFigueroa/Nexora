@@ -5,6 +5,10 @@
         "type": "remote",
         "url": "https://mcp.supabase.com/mcp?project_ref=bulqrbsiwwsdrqpngijs"
       }
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
     }
   }
 }

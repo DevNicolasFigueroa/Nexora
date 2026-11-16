@@ -21,8 +21,7 @@ specs/              Especificaciones (Spec-Driven Development)
 src/app/            Rutas (App Router)
 src/components/     Componentes de interfaz
 src/lib/            Clientes Supabase, validaciones Zod, tipos
-tests/              Pruebas unitarias (unit/) y E2E (e2e/)
-```
+tests/              Pruebas unitarias (unit/) y E2E (e2e/)```
 
 ## Puesta en marcha
 
