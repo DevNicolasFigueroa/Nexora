@@ -1,0 +1,30 @@
+# Dependencias
+/node_modules
+
+# Next.js
+/.next/
+/out/
+/next-env.d.ts
+tsconfig.tsbuildinfo
+
+# Entorno
+.env
+.env.local
+.env.*.local
+
+# Pruebas
+/coverage
+/playwright-report
+/test-results
+/blob-report
+
+# Supabase
+/supabase/.branches
+/supabase/.temp
+
+# Sistema operativo y editores
+.DS_Store
+*.pem
+Thumbs.db
+.idea/
+.vscode/
